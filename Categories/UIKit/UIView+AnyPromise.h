@@ -17,7 +17,7 @@
  
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface UIView (PromiseKit)
 
@@ -57,7 +57,7 @@
  @return A promise that fulfills with a boolean NSNumber indicating
  whether or not the animations actually finished.
 */
-+ (AnyPromise *)promiseWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewAnimationOptions)options animations:(void (^)(void))animations;
++ (AnyPromise *)promiseWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewAnimationOptions)options animations:(void (^)(void))animations NS_REFINED_FOR_SWIFT;
 
 /**
  Performs a view animation using a timing curve corresponding to the
@@ -66,7 +66,7 @@
  @return A promise that fulfills with a boolean NSNumber indicating
  whether or not the animations actually finished.
 */
-+ (AnyPromise *)promiseWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay usingSpringWithDamping:(CGFloat)dampingRatio initialSpringVelocity:(CGFloat)velocity options:(UIViewAnimationOptions)options animations:(void (^)(void))animations;
++ (AnyPromise *)promiseWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay usingSpringWithDamping:(CGFloat)dampingRatio initialSpringVelocity:(CGFloat)velocity options:(UIViewAnimationOptions)options animations:(void (^)(void))animations NS_REFINED_FOR_SWIFT;
 
 /**
  Creates an animation block object that can be used to set up
@@ -75,6 +75,6 @@
  @return A promise that fulfills with a boolean NSNumber indicating
  whether or not the animations actually finished.
 */
-+ (AnyPromise *)promiseWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewKeyframeAnimationOptions)options keyframeAnimations:(void (^)(void))animations;
++ (AnyPromise *)promiseWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewKeyframeAnimationOptions)options keyframeAnimations:(void (^)(void))animations NS_REFINED_FOR_SWIFT;
 
 @end

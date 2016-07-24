@@ -16,12 +16,12 @@ import PromiseKit
 extension CLLocationManager {
 
     public enum RequestAuthorizationType {
-        case Automatic
-        case Always
-        case WhenInUse
+        case automatic
+        case always
+        case whenInUse
     }
 
-    private class func promiseDoneForLocationManager(manager: CLLocationManager) -> Void {
+    private class func promiseDoneForLocationManager(_ manager: CLLocationManager) -> Void {
         manager.delegate = nil
         manager.stopUpdatingLocation()
     }
@@ -34,7 +34,7 @@ extension CLLocationManager {
       want to force one or the other, change this parameter from its default
       value.
      */
-    public class func promise(requestAuthorizationType: RequestAuthorizationType = .Automatic) -> LocationPromise {
+    public class func promise(_ requestAuthorizationType: RequestAuthorizationType = .automatic) -> LocationPromise {
         return promise(yielding: auther(requestAuthorizationType))
     }
 
@@ -43,7 +43,7 @@ extension CLLocationManager {
         manager.delegate = manager
         yield(manager)
         manager.startUpdatingLocation()
-        manager.promise.always {
+        _ = manager.promise.always {
             CLLocationManager.promiseDoneForLocationManager(manager)
         }
         return manager.promise
@@ -53,25 +53,17 @@ extension CLLocationManager {
 private class LocationManager: CLLocationManager, CLLocationManagerDelegate {
     let (promise, fulfill, reject) = LocationPromise.foo()
 
-#if os(iOS) || swift(>=2.3)
-    @objc func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    @objc private func locationManager(_ manager: CLLocationManager, didUpdateLocations ll: [CLLocation]) {
+        let locations = ll 
         fulfill(locations)
         CLLocationManager.promiseDoneForLocationManager(manager)
     }
-#else
-    @objc func locationManager(manager: CLLocationManager, didUpdateLocations ll: [AnyObject]) {
-        let locations = ll as! [CLLocation]
-        fulfill(locations)
-        CLLocationManager.promiseDoneForLocationManager(manager)
-    }
-#endif
 
-    @objc func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        switch error {
-        case let error as CLError where error == .LocationUnknown:
+    @objc func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        let error = error as NSError
+        if error.code == CLError.locationUnknown.rawValue && error.domain == kCLErrorDomain {
             // Apple docs say you should just ignore this error
-            break
-        default:
+        } else {
             reject(error)
             CLLocationManager.promiseDoneForLocationManager(manager)
         }
@@ -89,23 +81,20 @@ extension CLLocationManager {
      and not being abused for logic.
     */
     @available(iOS 8, *)
-    public class func requestAuthorization(type: RequestAuthorizationType = .Automatic) -> Promise<CLAuthorizationStatus> {
+    public class func requestAuthorization(type: RequestAuthorizationType = .automatic) -> Promise<CLAuthorizationStatus> {
         return AuthorizationCatcher(auther: auther(type)).promise
     }
 }
 
 @available(iOS 8, *)
 private class AuthorizationCatcher: CLLocationManager, CLLocationManagerDelegate {
-    /// Hack to fix https://github.com/mxcl/PromiseKit/issues/415
-    private class AuthorizationStatusPromise: Promise<CLAuthorizationStatus> {}
-
-    let (promise, fulfill, _) = AuthorizationStatusPromise.pendingPromise()
+    let (promise, fulfill, _) = Promise<CLAuthorizationStatus>.pending()
     var retainCycle: AnyObject?
 
     init(auther: (CLLocationManager)->()) {
         super.init()
         let status = CLLocationManager.authorizationStatus()
-        if status == .NotDetermined {
+        if status == .notDetermined {
             delegate = self
             auther(self)
             retainCycle = self
@@ -114,47 +103,47 @@ private class AuthorizationCatcher: CLLocationManager, CLLocationManagerDelegate
         }
     }
 
-    @objc private func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status != .NotDetermined {
+    @objc private func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status != .notDetermined {
             fulfill(status)
             retainCycle = nil
         }
     }
 }
 
-private func auther(requestAuthorizationType: CLLocationManager.RequestAuthorizationType) -> (CLLocationManager -> Void) {
+private func auther(_ requestAuthorizationType: CLLocationManager.RequestAuthorizationType) -> ((CLLocationManager) -> Void) {
 
     //PMKiOS7 guard #available(iOS 8, *) else { return }
     return { manager in
-    func hasInfoPListKey(key: String) -> Bool {
-        let value = NSBundle.mainBundle().objectForInfoDictionaryKey(key) as? String ?? ""
-        return !value.isEmpty
-    }
-
-    switch requestAuthorizationType {
-    case .Automatic:
-        let always = hasInfoPListKey("NSLocationAlwaysUsageDescription")
-        let whenInUse = hasInfoPListKey("NSLocationWhenInUseUsageDescription")
-        if always {
-            manager.requestAlwaysAuthorization()
-        } else {
-            if !whenInUse { NSLog("PromiseKit: Warning: `NSLocationWhenInUseUsageDescription` key not set") }
-            manager.requestWhenInUseAuthorization()
+        func hasInfoPlistKey(_ key: String) -> Bool {
+            let value = Bundle.main.object(forInfoDictionaryKey: key) as? String ?? ""
+            return !value.isEmpty
         }
-    case .WhenInUse:
-        manager.requestWhenInUseAuthorization()
-        break
-    case .Always:
-        manager.requestAlwaysAuthorization()
-        break
 
-    }
+        switch requestAuthorizationType {
+        case .automatic:
+            let always = hasInfoPlistKey("NSLocationAlwaysUsageDescription")
+            let whenInUse = hasInfoPlistKey("NSLocationWhenInUseUsageDescription")
+            if always {
+                manager.requestAlwaysAuthorization()
+            } else {
+                if !whenInUse { NSLog("PromiseKit: Warning: `NSLocationWhenInUseUsageDescription` key not set") }
+                manager.requestWhenInUseAuthorization()
+            }
+        case .whenInUse:
+            manager.requestWhenInUseAuthorization()
+            break
+        case .always:
+            manager.requestAlwaysAuthorization()
+            break
+
+        }
     }
 }
 
 #else
 
-private func auther(requestAuthorizationType: CLLocationManager.RequestAuthorizationType) -> (CLLocationManager -> Void) {
+private func auther(_ requestAuthorizationType: CLLocationManager.RequestAuthorizationType) -> (CLLocationManager) -> Void {
     return { _ in }
 }
 
@@ -162,29 +151,21 @@ private func auther(requestAuthorizationType: CLLocationManager.RequestAuthoriza
 
 
 public class LocationPromise: Promise<CLLocation> {
-    /// Hack to fix https://github.com/mxcl/PromiseKit/issues/415
-    private class LocationsPromise: Promise<[CLLocation]> {}
-
     // convoluted for concurrency guarantees
-
-    private let (parentPromise, fulfill, reject) = LocationsPromise.pendingPromise()
+    private let (parentPromise, fulfill, reject) = Promise<[CLLocation]>.pending()
 
     public func allResults() -> Promise<[CLLocation]> {
         return parentPromise
     }
 
-    private class func foo() -> (LocationPromise, ([CLLocation]) -> Void, (ErrorType) -> Void) {
+    private class func foo() -> (LocationPromise, ([CLLocation]) -> Void, (Error) -> Void) {
         var fulfill: ((CLLocation) -> Void)!
-        var reject: ((ErrorType) -> Void)!
+        var reject: ((Error) -> Void)!
         let promise = LocationPromise { fulfill = $0; reject = $1 }
 
-        promise.parentPromise.then(on: zalgo) { fulfill($0.last!) }
-        promise.parentPromise.error { reject($0) }
+        _ = promise.parentPromise.then(on: zalgo) { fulfill($0.last!) }
+        promise.parentPromise.catch(on: zalgo, execute: reject)
 
         return (promise, promise.fulfill, promise.reject)
-    }
-
-    private override init(@noescape resolvers: (fulfill: (CLLocation) -> Void, reject: (ErrorType) -> Void) throws -> Void) {
-        super.init(resolvers: resolvers)
     }
 }

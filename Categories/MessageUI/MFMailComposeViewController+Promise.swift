@@ -19,21 +19,21 @@ extension UIViewController {
         let proxy = PMKMailComposeViewControllerDelegate()
         proxy.retainCycle = proxy
         vc.mailComposeDelegate = proxy
-        presentViewController(vc, animated: animated, completion: completion)
-        proxy.promise.always {
-            self.dismissViewControllerAnimated(animated, completion: nil)
+        present(vc, animated: animated, completion: completion)
+        _ = proxy.promise.always {
+            self.dismiss(animated: animated, completion: nil)
         }
         return proxy.promise
     }
 }
 
 extension MFMailComposeViewController {
-    public enum Error: CancellableErrorType {
-        case Cancelled
+    public enum Error: CancellableError {
+        case cancelled
 
-        public var cancelled: Bool {
+        public var isCancelled: Bool {
             switch self {
-                case .Cancelled: return true
+                case .cancelled: return true
             }
         }
     }
@@ -41,40 +41,26 @@ extension MFMailComposeViewController {
 
 private class PMKMailComposeViewControllerDelegate: NSObject, MFMailComposeViewControllerDelegate, UINavigationControllerDelegate {
 
-    let (promise, fulfill, reject) = Promise<MFMailComposeResult>.pendingPromise()
+    let (promise, fulfill, reject) = Promise<MFMailComposeResult>.pending()
     var retainCycle: NSObject?
 
-    @objc func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+    @objc func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         defer { retainCycle = nil }
 
         if let error = error {
             reject(error)
         } else {
-        #if swift(>=2.3)
             switch result {
-            case .Failed:
+            case .failed:
                 var info = [NSObject: AnyObject]()
                 info[NSLocalizedDescriptionKey] = "The attempt to save or send the message was unsuccessful."
-                info[NSUnderlyingErrorKey] = NSNumber(integer: result.rawValue)
+                info[NSUnderlyingErrorKey] = NSNumber(value: result.rawValue)
                 reject(NSError(domain: PMKErrorDomain, code: PMKOperationFailed, userInfo: info))
-            case .Cancelled:
-                reject(MFMailComposeViewController.Error.Cancelled)
+            case .cancelled:
+                reject(MFMailComposeViewController.Error.cancelled)
             default:
                 fulfill(result)
             }
-        #else
-            switch result.rawValue {
-            case MFMailComposeResultFailed.rawValue:
-                var info = [NSObject: AnyObject]()
-                info[NSLocalizedDescriptionKey] = "The attempt to save or send the message was unsuccessful."
-                info[NSUnderlyingErrorKey] = NSNumber(unsignedInt: result.rawValue)
-                reject(NSError(domain: PMKErrorDomain, code: PMKOperationFailed, userInfo: info))
-            case MFMailComposeResultCancelled.rawValue:
-                reject(MFMailComposeViewController.Error.Cancelled)
-            default:
-                fulfill(result)
-            }
-        #endif
         }
     }
 }

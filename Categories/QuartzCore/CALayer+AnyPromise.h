@@ -21,7 +21,7 @@
 
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface CALayer (PromiseKit)
 
@@ -35,6 +35,6 @@
 
  @see addAnimation:forKey
 */
-- (AnyPromise *)promiseAnimation:(CAAnimation *)animation forKey:(NSString *)key;
+- (AnyPromise *)promiseAnimation:(CAAnimation *)animation forKey:(NSString *)key NS_REFINED_FOR_SWIFT;
 
 @end

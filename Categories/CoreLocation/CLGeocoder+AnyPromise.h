@@ -9,7 +9,7 @@
 
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface CLGeocoder (PromiseKit)
 
@@ -23,7 +23,7 @@
   1. The first placemark that resides at the specified location.
   2. The array of *all* placemarks that reside at the specified location.
 */
-- (AnyPromise *)reverseGeocode:(CLLocation *)location;
+- (AnyPromise *)reverseGeocode:(CLLocation *)location NS_REFINED_FOR_SWIFT;
 
 /**
  Submits a forward-geocoding request using the specified address dictionary or address string.
@@ -35,15 +35,6 @@
   1. The first placemark that resides at the specified address.
   2. The array of *all* placemarks that reside at the specified address.
 */
-- (AnyPromise *)geocode:(id)addressDictionaryOrAddressString;
-
-@end
-
-
-
-@interface CLGeocoder (PMKDeprecated)
-
-+ (AnyPromise *)geocode:(id)input __attribute__((deprecated("Use -geocode:")));
-+ (AnyPromise *)reverseGeocode:(CLLocation *)location __attribute__((deprecated("Use -reverseGeocode:")));
+- (AnyPromise *)geocode:(id)addressDictionaryOrAddressString NS_REFINED_FOR_SWIFT;
 
 @end

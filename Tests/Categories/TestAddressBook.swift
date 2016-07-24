@@ -8,10 +8,10 @@ class Test_AddressBook_Swift: XCTestCase {
         // AddressBook behaves differently in CI :(
         guard !isTravis() else { return }
 
-        let ex = expectationWithDescription("")
+        let ex = expectation(description: "")
         ABAddressBookRequestAccess().then { (auth: ABAuthorizationStatus) in
-            XCTAssertEqual(auth, ABAuthorizationStatus.Authorized)
-        }.then(ex.fulfill)
-        waitForExpectationsWithTimeout(30, handler: nil)
+            XCTAssertEqual(auth, ABAuthorizationStatus.authorized)
+        }.then(execute: ex.fulfill)
+        waitForExpectations(timeout: 1)
     }
 }

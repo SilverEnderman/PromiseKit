@@ -20,7 +20,7 @@
  
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface NSTask (PromiseKit)
 
@@ -44,6 +44,6 @@
   2) The stderr interpreted as a UTF8 string.
   3) The stdout as `NSData`.
 */
-- (AnyPromise *)promise;
+- (AnyPromise *)promise NS_REFINED_FOR_SWIFT;
 
 @end

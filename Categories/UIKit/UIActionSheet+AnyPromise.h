@@ -14,7 +14,7 @@
 
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface UIActionSheet (PromiseKit)
 
@@ -37,6 +37,6 @@
   1) The index (NSNumber) of the button that was tapped to dismiss the sheet.
   2) This action sheet.
 */
-- (AnyPromise *)promiseInView:(UIView *)view;
+- (AnyPromise *)promiseInView:(UIView *)view NS_REFINED_FOR_SWIFT;
 
 @end

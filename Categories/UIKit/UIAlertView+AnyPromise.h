@@ -14,7 +14,7 @@
 
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface UIAlertView (PromiseKit)
 
@@ -35,6 +35,6 @@
   1) The index of the button that was tapped to dismiss the alert.
   2) This alert view.
 */
-- (AnyPromise *)promise;
+- (AnyPromise *)promise NS_REFINED_FOR_SWIFT;
 
 @end

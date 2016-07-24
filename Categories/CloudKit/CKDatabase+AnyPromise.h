@@ -9,24 +9,24 @@
  
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface CKDatabase (PromiseKit)
 
-- (AnyPromise *)fetchRecordWithID:(CKRecordID *)recordID;
-- (AnyPromise *)saveRecord:(CKRecord *)record;
-- (AnyPromise *)deleteRecordWithID:(CKRecordID *)recordID;
+- (AnyPromise *)fetchRecordWithID:(CKRecordID *)recordID NS_REFINED_FOR_SWIFT;
+- (AnyPromise *)saveRecord:(CKRecord *)record NS_REFINED_FOR_SWIFT;
+- (AnyPromise *)deleteRecordWithID:(CKRecordID *)recordID NS_REFINED_FOR_SWIFT;
 
-- (AnyPromise *)performQuery:(CKQuery *)query inZoneWithID:(CKRecordZoneID *)zoneID;
+- (AnyPromise *)performQuery:(CKQuery *)query inZoneWithID:(CKRecordZoneID *)zoneID NS_REFINED_FOR_SWIFT;
 
-- (AnyPromise *)fetchAllRecordZones;
-- (AnyPromise *)fetchRecordZoneWithID:(CKRecordZoneID *)zoneID;
-- (AnyPromise *)saveRecordZone:(CKRecordZone *)zone;
-- (AnyPromise *)deleteRecordZoneWithID:(CKRecordZoneID *)zoneID;
+- (AnyPromise *)fetchAllRecordZones NS_REFINED_FOR_SWIFT;
+- (AnyPromise *)fetchRecordZoneWithID:(CKRecordZoneID *)zoneID NS_REFINED_FOR_SWIFT;
+- (AnyPromise *)saveRecordZone:(CKRecordZone *)zone NS_REFINED_FOR_SWIFT;
+- (AnyPromise *)deleteRecordZoneWithID:(CKRecordZoneID *)zoneID NS_REFINED_FOR_SWIFT;
 
-- (AnyPromise *)fetchSubscriptionWithID:(NSString *)subscriptionID;
-- (AnyPromise *)fetchAllSubscriptions;
-- (AnyPromise *)saveSubscription:(CKSubscription *)subscription;
-- (AnyPromise *)deleteSubscriptionWithID:(NSString *)subscriptionID;
+- (AnyPromise *)fetchSubscriptionWithID:(NSString *)subscriptionID NS_REFINED_FOR_SWIFT;
+- (AnyPromise *)fetchAllSubscriptions NS_REFINED_FOR_SWIFT;
+- (AnyPromise *)saveSubscription:(CKSubscription *)subscription NS_REFINED_FOR_SWIFT;
+- (AnyPromise *)deleteSubscriptionWithID:(NSString *)subscriptionID NS_REFINED_FOR_SWIFT;
 
 @end

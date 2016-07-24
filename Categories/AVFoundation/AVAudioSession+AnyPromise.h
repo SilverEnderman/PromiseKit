@@ -15,7 +15,7 @@
 
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface AVAudioSession (PromiseKit)
 
@@ -25,6 +25,6 @@
 
  @see requestRecordPermission:
 */
-- (AnyPromise *)requestRecordPermission;
+- (AnyPromise *)requestRecordPermission  NS_REFINED_FOR_SWIFT;
 
 @end

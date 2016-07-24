@@ -20,14 +20,12 @@ import PromiseKit
 */
 extension NSObject {
     /**
-      @return A promise that resolves when the provided keyPath changes.
-
-      @warning *Important* The promise must not outlive the object under observation.
-
-      @see Apple’s KVO documentation.
+      - Returns: A promise that resolves when the provided keyPath changes.
+      - Warning: *Important* The promise must not outlive the object under observation.
+      - SeeAlso: Apple’s KVO documentation.
     */
     public func observe<T>(keyPath: String) -> Promise<T> {
-        let (promise, fulfill, reject) = Promise<T>.pendingPromise()
+        let (promise, fulfill, reject) = Promise<T>.pending()
         let proxy = KVOProxy(observee: self, keyPath: keyPath) { obj in
             if let obj = obj as? T {
                 fulfill(obj)
@@ -48,14 +46,14 @@ private class KVOProxy: NSObject {
     init(observee: NSObject, keyPath: String, resolve: (AnyObject?) -> Void) {
         fulfill = resolve
         super.init()
-        observee.addObserver(self, forKeyPath: keyPath, options: NSKeyValueObservingOptions.New, context: pointer)
+        observee.addObserver(self, forKeyPath: keyPath, options: NSKeyValueObservingOptions.new, context: pointer)
     }
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if let change = change where context == pointer {
+    override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
+        if let change = change, context == pointer {
             defer { retainCycle = nil }
-            fulfill(change[NSKeyValueChangeNewKey])
-            if let object = object, keyPath = keyPath {
+            fulfill(change[NSKeyValueChangeKey.newKey])
+            if let object = object, let keyPath = keyPath {
                 object.removeObserver(self, forKeyPath: keyPath)
             }
         }

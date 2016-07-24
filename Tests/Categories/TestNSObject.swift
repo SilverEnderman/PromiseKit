@@ -4,22 +4,22 @@ import XCTest
 
 class Test_NSObject_Swift: XCTestCase {
     func testKVO() {
-        let ex = expectationWithDescription("")
+        let ex = expectation(description: "")
 
         let foo = Foo()
-        foo.observe("bar").then { (newValue: String) -> Void in
+        foo.observe(keyPath: "bar").then { (newValue: String) -> Void in
             XCTAssertEqual(newValue, "moo")
             ex.fulfill()
-        }.error { err in
+        }.catch { _ in
             XCTFail()
         }
         foo.bar = "moo"
 
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testAfterlife() {
-        let ex = expectationWithDescription("")
+        let ex = expectation(description: "")
         var killme: NSObject!
 
         autoreleasepool {
@@ -34,17 +34,17 @@ class Test_NSObject_Swift: XCTestCase {
 
             innerScope()
 
-            after(0.2).then {
+            after(interval: 0.2).then {
                 killme = nil
             }
         }
 
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testMultiObserveAfterlife() {
-        let ex1 = expectationWithDescription("")
-        let ex2 = expectationWithDescription("")
+        let ex1 = expectation(description: "")
+        let ex2 = expectation(description: "")
         var killme: NSObject!
 
         autoreleasepool {
@@ -61,12 +61,12 @@ class Test_NSObject_Swift: XCTestCase {
 
             innerScope()
 
-            after(0.2).then {
+            after(interval: 0.2).then {
                 killme = nil
             }
         }
 
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 }
 

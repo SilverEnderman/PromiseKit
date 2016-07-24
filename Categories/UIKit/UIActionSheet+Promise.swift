@@ -19,11 +19,11 @@ import PromiseKit
     import PromiseKit
 */
 extension UIActionSheet {
-    public func promiseInView(view: UIView) -> Promise<Int> {
+    public func promise(in view: UIView) -> Promise<Int> {
         let proxy = PMKActionSheetDelegate()
         delegate = proxy
         proxy.retainCycle = proxy
-        showInView(view)
+        show(in: view)
 
         if numberOfButtons == 1 && cancelButtonIndex == 0 {
             NSLog("PromiseKit: An action sheet is being promised with a single button that is set as the cancelButtonIndex. The promise *will* be cancelled which may result in unexpected behavior. See http://promisekit.org/PromiseKit-2.0-Released/ for cancellation documentation.")
@@ -32,28 +32,28 @@ extension UIActionSheet {
         return proxy.promise
     }
 
-    public enum Error: CancellableErrorType {
-        case Cancelled
+    public enum Error: CancellableError {
+        case cancelled
 
-        public var cancelled: Bool {
+        public var isCancelled: Bool {
             switch self {
-                case .Cancelled: return true
+                case .cancelled: return true
             }
         }
     }
 }
 
 private class PMKActionSheetDelegate: NSObject, UIActionSheetDelegate {
-    let (promise, fulfill, reject) = Promise<Int>.pendingPromise()
+    let (promise, fulfill, reject) = Promise<Int>.pending()
     var retainCycle: NSObject?
 
-    @objc func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
+    @objc func actionSheet(_ actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
         defer { retainCycle = nil }
 
         if buttonIndex != actionSheet.cancelButtonIndex {
             fulfill(buttonIndex)
         } else {
-            reject(UIActionSheet.Error.Cancelled)
+            reject(UIActionSheet.Error.cancelled)
         }
     }
 }

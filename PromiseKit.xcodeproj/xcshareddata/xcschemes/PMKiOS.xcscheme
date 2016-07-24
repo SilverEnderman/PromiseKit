@@ -28,9 +28,24 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "63D5C5201D2301E2002D7A62"
+               BuildableName = "PMKUI.xctest"
+               BlueprintName = "PMKTests/UI"
+               ReferencedContainer = "container:PromiseKit.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+>>>>>>> Compiles with Xcode 8 beta3
                BlueprintIdentifier = "638CDF021AEE734B0023A543"
-               BuildableName = "PMKiOSUITestsHost.app"
-               BlueprintName = "PMKiOSUITestsHost"
+               BuildableName = "PMKUI.Host.app"
+               BlueprintName = "PMKTests/UI/Host"
                ReferencedContainer = "container:PromiseKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -48,8 +63,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "638E0ED41AEF16530052E28F"
-               BuildableName = "PMKiOSCategoryTests.xctest"
-               BlueprintName = "PMKiOSCategoryTests"
+               BuildableName = "PMKCategories.iOS.xctest"
+               BlueprintName = "PMKTests/Categories/iOS"
                ReferencedContainer = "container:PromiseKit.xcodeproj">
             </BuildableReference>
             <LocationScenarioReference
@@ -61,9 +76,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "63EBEAC41B6151AA0097FA42"
-               BuildableName = "PMKiOSUITests.xctest"
-               BlueprintName = "PMKiOSUITests"
+               BlueprintIdentifier = "63D5C5201D2301E2002D7A62"
+               BuildableName = "PMKUI.xctest"
+               BlueprintName = "PMKTests/UI"
                ReferencedContainer = "container:PromiseKit.xcodeproj">
             </BuildableReference>
          </TestableReference>

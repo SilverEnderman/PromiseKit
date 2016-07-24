@@ -15,7 +15,7 @@
  
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface ACAccountStore (PromiseKit)
 
@@ -32,7 +32,7 @@
 
  @see requestAccessToAccountsWithType:options:completion:
 */
-- (AnyPromise *)requestAccessToAccountsWithType:(ACAccountType *)type options:(NSDictionary *)options;
+- (AnyPromise *)requestAccessToAccountsWithType:(ACAccountType *)type options:(NSDictionary *)options NS_REFINED_FOR_SWIFT;
 
 /**
  Renews account credentials when the credentials are no longer valid.
@@ -41,7 +41,7 @@
 
  @return A promise that thens the `ACAccountCredentialRenewResult`.
 */
-- (AnyPromise *)renewCredentialsForAccount:(ACAccount *)account;
+- (AnyPromise *)renewCredentialsForAccount:(ACAccount *)account NS_REFINED_FOR_SWIFT;
 
 /**
  Saves an account to the Accounts database.
@@ -51,7 +51,7 @@
  @return A promise that resolves when the account has been successfully
  saved.
 */
-- (AnyPromise *)saveAccount:(ACAccount *)account;
+- (AnyPromise *)saveAccount:(ACAccount *)account NS_REFINED_FOR_SWIFT;
 
 /**
  Removes an account from the account store.
@@ -61,6 +61,6 @@
  @return A promise that resolves when the account has been successfully
  removed.
 */
-- (AnyPromise *)removeAccount:(ACAccount *)account;
+- (AnyPromise *)removeAccount:(ACAccount *)account NS_REFINED_FOR_SWIFT;
 
 @end

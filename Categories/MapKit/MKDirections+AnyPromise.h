@@ -9,7 +9,7 @@
 
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface MKDirections (PromiseKit)
 
@@ -20,7 +20,7 @@
 
  @return A promise that fulfills with a `MKDirectionsResponse`.
 */
-- (AnyPromise *)calculateDirections;
+- (AnyPromise *)calculateDirections NS_REFINED_FOR_SWIFT;
 
 /**
  Begins calculating the requested travel-time information asynchronously.
@@ -29,15 +29,6 @@
 
  @return A promise that fulfills with a `MKETAResponse`.
 */
-- (AnyPromise *)calculateETA;
-
-@end
-
-
-
-@interface MKDirections (PMKDeprecated)
-
-+ (AnyPromise *)promise:(MKDirectionsRequest *)request __attribute__((deprecated("Use -calculateDirections")));
-+ (AnyPromise *)promiseETA:(MKDirectionsRequest *)request __attribute__((deprecated("Use -calculateETA")));
+- (AnyPromise *)calculateETA NS_REFINED_FOR_SWIFT;
 
 @end

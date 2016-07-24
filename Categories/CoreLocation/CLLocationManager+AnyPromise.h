@@ -9,7 +9,7 @@
  
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface CLLocationManager (PromiseKit)
 
@@ -27,7 +27,7 @@
   1. The most recent `CLLocation`.
   2. An array of all recent `CLLocations`.
 */
-+ (AnyPromise *)promise;
++ (AnyPromise *)promise NS_REFINED_FOR_SWIFT;
 
 
 /**
@@ -41,6 +41,6 @@
 
  @see +promise
 */
-+ (AnyPromise *)until:(BOOL(^)(CLLocation *))isLocationGoodBlock;
++ (AnyPromise *)until:(BOOL(^)(CLLocation *))isLocationGoodBlock NS_REFINED_FOR_SWIFT;
 
 @end

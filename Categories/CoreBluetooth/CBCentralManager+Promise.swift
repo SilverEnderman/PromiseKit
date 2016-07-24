@@ -6,43 +6,25 @@ import PromiseKit
 
 
 private class CentralManager: CBCentralManager, CBCentralManagerDelegate {
-  
-  let (promise, fulfill, reject) = CentralManagerPromise.deferred()
-  
-  @objc private func centralManagerDidUpdateState(central: CBCentralManager) {
-    if central.state != .Unknown {
-      fulfill(central)
+  var retainCycle: CentralManager!
+  let (promise, fulfill, reject) = Promise<CBCentralManagerState>.pending()
+
+  @objc private func centralManagerDidUpdateState(_ manager: CBCentralManager) {
+    if manager.state != .unknown {
+      fulfill(manager.state as! CBCentralManagerState)
     }
   }
 }
 
 extension CBCentralManager {
-  
-  public class func promise() -> CentralManagerPromise {
+  /// A promise that fulfills when the state of CoreBluetooth changes
+  public class func state() -> Promise<CBCentralManagerState> {
     let manager = CentralManager(delegate: nil, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: false])
     manager.delegate = manager
-    manager.promise.always {
-      manager.delegate = nil
+    manager.retainCycle = manager
+    _ = manager.promise.always {
+      manager.retainCycle = nil
     }
     return manager.promise
   }
 }
-
-public class CentralManagerPromise: Promise<CBCentralManager> {
-  
-  private let (parentPromise, fulfill, reject) = Promise<CBCentralManager>.pendingPromise()
-  
-  private class func deferred() -> (CentralManagerPromise, CBCentralManager -> Void, ErrorType -> Void) {
-    var fullfill: (CBCentralManager -> Void)!
-    var reject: (ErrorType -> Void)!
-    let promise = CentralManagerPromise { fullfill = $0; reject = $1 }
-    promise.parentPromise.then(on: zalgo) { fullfill($0) }
-    promise.parentPromise.error { reject($0) }
-    return (promise, promise.fulfill, promise.reject)
-  }
-  
-  private override init(@noescape resolvers: (fulfill: (CBCentralManager) -> Void, reject: (ErrorType) -> Void) throws -> Void) {
-    super.init(resolvers: resolvers)
-  }
-}
-

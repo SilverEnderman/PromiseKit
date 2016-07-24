@@ -18,37 +18,26 @@ import PromiseKit
 
     import PromiseKit
 */
-extension NSNotificationCenter {
-    public class func once(name: String) -> NotificationPromise {
-        return NSNotificationCenter.defaultCenter().once(name)
-    }
-
-    public func once(name: String) -> NotificationPromise {
+extension NotificationCenter {
+    public func once(forName name: String) -> NotificationPromise {
         let (promise, fulfill) = NotificationPromise.go()
-        let id = addObserverForName(name, object: nil, queue: nil, usingBlock: fulfill)
-        promise.then(on: zalgo) { _ in self.removeObserver(id) }
+        let id = addObserver(forName: NSNotification.Name(rawValue: name), object: nil, queue: nil, using: fulfill)
+        _ = promise.then(on: zalgo) { _ in self.removeObserver(id) }
         return promise
     }
 }
 
-public class NotificationPromise: Promise<[NSObject: AnyObject]> {
-    /// Hack to fix https://github.com/mxcl/PromiseKit/issues/415
-    private class NotePromise: Promise<NSNotification> {}
+public class NotificationPromise: Promise<[String: Any]> {
+    private let pending = Promise<Notification>.pending()
 
-    private let (parentPromise, parentFulfill, _) = NotePromise.pendingPromise()
-
-    public func asNotification() -> Promise<NSNotification> {
-        return parentPromise
+    public func asNotification() -> Promise<Notification> {
+        return pending.promise
     }
 
-    private class func go() -> (NotificationPromise, (NSNotification) -> Void) {
-        var fulfill: (([NSObject: AnyObject]) -> Void)!
+    private class func go() -> (NotificationPromise, (Notification) -> Void) {
+        var fulfill: (([String: Any]) -> Void)!
         let promise = NotificationPromise { f, _ in fulfill = f }
-        promise.parentPromise.then { fulfill($0.userInfo ?? [:]) }
-        return (promise, promise.parentFulfill)
-    }
-
-    private override init(@noescape resolvers: (fulfill: ([NSObject: AnyObject]) -> Void, reject: (ErrorType) -> Void) throws -> Void) {
-        super.init(resolvers: resolvers)
+        _ = promise.pending.promise.then { fulfill!($0.userInfo ?? [:]) }
+        return (promise, promise.pending.fulfill)
     }
 }

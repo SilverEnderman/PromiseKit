@@ -9,7 +9,7 @@
 
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface CKContainer (PromiseKit)
 
@@ -18,7 +18,7 @@
 
  @return A promise that thens the `CKAccountStatus` of this container.
 */
-- (AnyPromise *)accountStatus;
+- (AnyPromise *)accountStatus NS_REFINED_FOR_SWIFT;
 
 /**
  Requests the specified permission from the user asynchronously.
@@ -28,7 +28,7 @@
  @return A promise that thens the `CKApplicationPermissionStatus` for the
  requested permission.
 */
-- (AnyPromise *)requestApplicationPermission:(CKApplicationPermissions)applicationPermission;
+- (AnyPromise *)requestApplicationPermission:(CKApplicationPermissions)applicationPermission NS_REFINED_FOR_SWIFT;
 
 /**
  Checks the status of the specified permission asynchronously.
@@ -39,7 +39,7 @@
  @return A promise that thens the `CKApplicationPermissionStatus` for
  the requested permission.
 */
-- (AnyPromise *)statusForApplicationPermission:(CKApplicationPermissions)applicationPermission;
+- (AnyPromise *)statusForApplicationPermission:(CKApplicationPermissions)applicationPermission NS_REFINED_FOR_SWIFT;
 
 /**
 
@@ -48,7 +48,7 @@
 
  @return A promise that thens the array of `CKDiscoveredUserInfo` objects.
 */
-- (AnyPromise *)discoverAllContactUserInfos;
+- (AnyPromise *)discoverAllContactUserInfos NS_REFINED_FOR_SWIFT;
 
 /**
  Retrieves information about a single user based on that user’s email
@@ -60,7 +60,7 @@
  @return A promise that thens the `CKDiscoveredUserInfo` for the
  requested user record.
 */
-- (AnyPromise *)discoverUserInfo:(id)emailStringOrRecordID;
+- (AnyPromise *)discoverUserInfo:(id)emailStringOrRecordID NS_REFINED_FOR_SWIFT;
 
 /**
  Returns the user record associated with the current user.
@@ -68,6 +68,6 @@
  @return A promise that thens the `CKRecord` for the current user or `nil`
  if there is no current user.
 */
-- (AnyPromise *)fetchUserRecordID;
+- (AnyPromise *)fetchUserRecordID NS_REFINED_FOR_SWIFT;
 
 @end

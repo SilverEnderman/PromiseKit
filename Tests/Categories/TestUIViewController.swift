@@ -8,80 +8,80 @@ private let dummy = 1_234_765
 class Test_UIViewController_Swift: UIKitTestCase {
 
     func test_rejects_if_vc_has_no_promise_property() {
-        let ex = expectationWithDescription("")
-        let p: Promise<Int> = rootvc.promiseViewController(UIViewController(), animate: [])
-        p.error { error in
-            if case UIViewController.Error.NotPromisable = error {
+        let ex = expectation(description: "")
+        let p: Promise<Int> = rootvc.promise(UIViewController(), animate: [])
+        p.catch { error in
+            if case UIViewController.Error.notPromisable = error {
                 ex.fulfill()
             }
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_rejects_if_promise_property_returns_nil() {
-        let ex = expectationWithDescription("")
-        let p: Promise<Int> = rootvc.promiseViewController(MockViewController(), animate: [])
-        p.error { error in
-            if case UIViewController.Error.NilPromisable = error {
+        let ex = expectation(description: "")
+        let p: Promise<Int> = rootvc.promise(MockViewController(), animate: [])
+        p.catch { error in
+            if case UIViewController.Error.nilPromisable = error {
                 ex.fulfill()
             }
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_rejects_if_promise_property_casts_wrongly() {
-        let ex = expectationWithDescription("")
+        let ex = expectation(description: "")
         let my = MockViewController()
-        my.promise = Promise(true)
-        let p: Promise<Int> = rootvc.promiseViewController(my, animate: [])
-        p.error { err in
-            if case UIViewController.Error.NotGenericallyPromisable = err {
+        my.promise = Promise(value: true)
+        let p: Promise<Int> = rootvc.promise(my, animate: [])
+        p.catch { err in
+            if case UIViewController.Error.notGenericallyPromisable = err {
                 ex.fulfill()
             }
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_resolved_promise_property_means_vc_does_not_appear() {
-        let ex = expectationWithDescription("")
+        let ex = expectation(description: "")
         let my = MockViewController()
-        my.promise = Promise(dummy)
-        rootvc.promiseViewController(my, animate: []).then { (x: Int) -> Void in
+        my.promise = Promise(value: dummy)
+        rootvc.promise(my, animate: []).then { (x: Int) -> Void in
             XCTAssertFalse(my.appeared)
             XCTAssertEqual(x, dummy)
             ex.fulfill()
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_vc_dismisses_once_promise_is_resolved() {
-        let ex = expectationWithDescription("")
+        let ex = expectation(description: "")
         let my = MockViewController()
-        let (promise, resolve, _) = Promise<Int>.pendingPromise()
+        let (promise, resolve, _) = Promise<Int>.pending()
         my.promise = promise
-        rootvc.promiseViewController(my, animate: []).then { (x: Int) -> Void in
+        rootvc.promise(my, animate: []).then { (x: Int) -> Void in
             XCTAssertTrue(my.appeared)
             XCTAssertEqual(x, dummy)
             ex.fulfill()
         }
-        after(0).then {
+        after(interval: 0).then {
             resolve(dummy)
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func test_nav_controllers_use_their_root_vc_promise_property() {
-        let ex = expectationWithDescription("")
+        let ex = expectation(description: "")
         let nc = UINavigationController()
         let my = MockViewController()
-        my.promise = after(0.1).then{ dummy }
+        my.promise = after(interval: 0.1).then{ dummy }
         nc.viewControllers = [my]
-        rootvc.promiseViewController(nc, animate: []).then { (x: Int) -> Void in
+        rootvc.promise(nc, animate: []).then { (x: Int) -> Void in
             XCTAssertTrue(my.appeared)
             XCTAssertEqual(x, dummy)
             ex.fulfill()
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 }
 
@@ -92,7 +92,7 @@ private class MockViewController: UIViewController, Promisable {
 
     var appeared = false
 
-    private override func viewDidAppear(animated: Bool) {
+    private override func viewDidAppear(_ animated: Bool) {
         appeared = true
     }
 }

@@ -14,7 +14,7 @@
  
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface UIViewController (PromiseKit)
 
@@ -68,23 +68,6 @@
 
  @return A promise that can be resolved by the presented view controller.
 */
-- (AnyPromise *)promiseViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(void))block;
-
-@end
-
-
-
-@interface UIViewController (PMKUnavailable)
-
-#define PMKRationale \
-    "The promiseViewController system has been rennovated: the fullfil and " \
-    "reject category methods have been removed due to runtime safety " \
-    "concerns and instead you should implement a -promise property on your " \
-    "view controller subclass. @see promiseViewController:animated:completion:"
-
-- (void)fulfill:(id)value __attribute__((unavailable(PMKRationale)));
-- (void)reject:(NSError *)value __attribute__((unavailable(PMKRationale)));
-
-#undef PMKRationale
+- (AnyPromise *)promiseViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(void))block NS_REFINED_FOR_SWIFT;
 
 @end

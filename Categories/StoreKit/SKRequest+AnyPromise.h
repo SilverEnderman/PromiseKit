@@ -15,7 +15,7 @@
  
  And then in your sources:
  
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface SKRequest (PromiseKit)
 
@@ -26,6 +26,6 @@
  receiver is an SKProductsRequest, the promise fulfills with its
  `SKProductsResponse`, otherwise the promise is void.
 */
-- (AnyPromise *)promise;
+- (AnyPromise *)promise NS_REFINED_FOR_SWIFT;
 
 @end

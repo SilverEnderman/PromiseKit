@@ -11,34 +11,34 @@ import PromiseKit
  
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 extension CKContainer {
     public func accountStatus() -> Promise<CKAccountStatus> {
-        return Promise<CKAccountStatus> { self.accountStatusWithCompletionHandler($0) }
+        return Promise.wrap(resolver: accountStatus)
     }
 
-    public func requestApplicationPermission(applicationPermissions: CKApplicationPermissions) -> Promise<CKApplicationPermissionStatus> {
-        return Promise<CKApplicationPermissionStatus> { self.requestApplicationPermission(applicationPermissions, completionHandler: $0) }
+    public func requestApplicationPermission(_ applicationPermissions: CKApplicationPermissions) -> Promise<CKApplicationPermissionStatus> {
+        return Promise.wrap { requestApplicationPermission(applicationPermissions, completionHandler: $0) }
     }
 
-    public func statusForApplicationPermission(applicationPermissions: CKApplicationPermissions) -> Promise<CKApplicationPermissionStatus> {
-        return Promise { statusForApplicationPermission(applicationPermissions, completionHandler: $0) }
+    public func status(forApplicationPermission applicationPermissions: CKApplicationPermissions) -> Promise<CKApplicationPermissionStatus> {
+        return Promise.wrap { status(forApplicationPermission: applicationPermissions, completionHandler: $0) }
     }
 
     public func discoverAllContactUserInfos() -> Promise<[CKDiscoveredUserInfo]> {
-        return Promise(resolver: { self.discoverAllContactUserInfosWithCompletionHandler($0) })
+        return Promise.wrap(resolver: discoverAllContactUserInfos)
     }
 
-    public func discoverUserInfo(email email: String) -> Promise<CKDiscoveredUserInfo> {
-        return Promise { discoverUserInfoWithEmailAddress(email, completionHandler: $0) }
+    public func discoverUserInfo(withEmailAddress email: String) -> Promise<CKDiscoveredUserInfo> {
+        return Promise.wrap { discoverUserInfo(withEmailAddress: email, completionHandler: $0) }
     }
 
-    public func discoverUserInfo(recordID recordID: CKRecordID) -> Promise<CKDiscoveredUserInfo> {
-        return Promise { discoverUserInfoWithUserRecordID(recordID, completionHandler: $0) }
+    public func discoverUserInfo(withUserRecordID recordID: CKRecordID) -> Promise<CKDiscoveredUserInfo> {
+        return Promise.wrap { self.discoverUserInfo(withUserRecordID: recordID, completionHandler: $0) }
     }
 
     public func fetchUserRecordID() -> Promise<CKRecordID> {
-        return Promise { fetchUserRecordIDWithCompletionHandler($0) }
+        return Promise.wrap(resolver: fetchUserRecordID)
     }
 }

@@ -35,16 +35,16 @@ public class PMKAlertController {
     public var textFields: [UITextField]? { return UIAlertController.textFields }
     public var popoverPresentationController: UIPopoverPresentationController? { return UIAlertController.popoverPresentationController }
 
-    public required init(title: String?, message: String?  = nil, preferredStyle: UIAlertControllerStyle = .Alert) {
+    public required init(title: String?, message: String?  = nil, preferredStyle: UIAlertControllerStyle = .alert) {
         UIAlertController = UIKit.UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
     }
 
-    public func addActionWithTitle(title: String, style: UIAlertActionStyle = .Default) -> UIAlertAction {
+    public func addActionWithTitle(title: String, style: UIAlertActionStyle = .default) -> UIAlertAction {
         let action = UIAlertAction(title: title, style: style) { action in
-            if style != UIAlertActionStyle.Cancel {
+            if style != .cancel {
                 self.fulfill(action)
             } else {
-                self.reject(Error.Cancelled)
+                self.reject(Error.cancelled)
             }
         }
         UIAlertController.addAction(action)
@@ -52,18 +52,18 @@ public class PMKAlertController {
     }
 
     public func addTextFieldWithConfigurationHandler(configurationHandler: ((UITextField) -> Void)?) {
-        UIAlertController.addTextFieldWithConfigurationHandler(configurationHandler)
+        UIAlertController.addTextField(configurationHandler: configurationHandler)
     }
 
     private let UIAlertController: UIKit.UIAlertController
-    private let (promise, fulfill, reject) = Promise<UIAlertAction>.pendingPromise()
+    private let (promise, fulfill, reject) = Promise<UIAlertAction>.pending()
     private var retainCycle: PMKAlertController?
 
-    public enum Error: CancellableErrorType {
-        case Cancelled
+    public enum Error: CancellableError {
+        case cancelled
       
-      public var cancelled: Bool {
-          return self == .Cancelled
+      public var isCancelled: Bool {
+          return self == .cancelled
       }
     }
 }
@@ -71,8 +71,8 @@ public class PMKAlertController {
 extension UIViewController {
     public func promiseViewController(vc: PMKAlertController, animated: Bool = true, completion: (() -> Void)? = nil) -> Promise<UIAlertAction> {
         vc.retainCycle = vc
-        presentViewController(vc.UIAlertController, animated: true, completion: nil)
-        vc.promise.always { _ -> Void in
+        present(vc.UIAlertController, animated: true, completion: nil)
+        _ = vc.promise.always { _ -> Void in
             vc.retainCycle = nil
         }
         return vc.promise

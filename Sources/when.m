@@ -1,11 +1,10 @@
-#import "AnyPromise.h"
+#import "PromiseKit.h"
 #import "AnyPromise+Private.h"
 @import Foundation.NSDictionary;
 @import Foundation.NSError;
 @import Foundation.NSProgress;
 @import Foundation.NSNull;
 #import <libkern/OSAtomic.h>
-#import "Umbrella.h"
 
 // NSProgress resources:
 //  * https://robots.thoughtbot.com/asynchronous-nsprogress
@@ -52,7 +51,7 @@ AnyPromise *PMKWhen(id promises) {
             if (![promise isKindOfClass:[AnyPromise class]])
                 promise = [AnyPromise promiseWithValue:promise];
 
-            [promise pipe:^(id value){
+            [promise __pipe:^(id value){
                 if (progress.fractionCompleted >= 1)
                     return;
 

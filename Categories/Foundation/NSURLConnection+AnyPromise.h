@@ -16,7 +16,7 @@
  
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 
  PromiseKit automatically deserializes the raw HTTP data response into the
  appropriate rich data type based on the mime type the server provides.
@@ -61,7 +61,7 @@
    2) The `NSHTTPURLResponse`.
    3) The raw `NSData` response.
 */
-+ (AnyPromise *)GET:(id)urlStringFormatOrURL, ...;
++ (AnyPromise *)GET:(id)urlStringFormatOrURL, ... NS_REFINED_FOR_SWIFT;
 
 /**
  Makes a GET request with the provided query parameters.
@@ -82,7 +82,7 @@
    2) The `NSHTTPURLResponse`.
    3) The raw `NSData` response.
 */
-+ (AnyPromise *)GET:(NSString *)urlString query:(NSDictionary *)parameters;
++ (AnyPromise *)GET:(NSString *)urlString query:(NSDictionary *)parameters NS_REFINED_FOR_SWIFT;
 
 /**
  Makes a POST request to the provided URL passing form URL encoded
@@ -108,7 +108,7 @@
    2) The `NSHTTPURLResponse`.
    3) The raw `NSData` response.
 */
-+ (AnyPromise *)POST:(NSString *)urlString formURLEncodedParameters:(NSDictionary *)parameters;
++ (AnyPromise *)POST:(NSString *)urlString formURLEncodedParameters:(NSDictionary *)parameters NS_REFINED_FOR_SWIFT;
 
 /**
  Makes a POST request to the provided URL passing JSON encoded parameters.
@@ -132,7 +132,7 @@
    2) The `NSHTTPURLResponse`.
    3) The raw `NSData` response.
 */
-+ (AnyPromise *)POST:(NSString *)urlString JSON:(NSDictionary *)JSONParameters;
++ (AnyPromise *)POST:(NSString *)urlString JSON:(NSDictionary *)JSONParameters NS_REFINED_FOR_SWIFT;
 
 /**
  Makes a PUT request to the provided URL passing form URL-encoded
@@ -154,7 +154,7 @@
    2) The `NSHTTPURLResponse`.
    3) The raw `NSData` response.
 */
-+ (AnyPromise *)PUT:(NSString *)urlString formURLEncodedParameters:(NSDictionary *)params;
++ (AnyPromise *)PUT:(NSString *)urlString formURLEncodedParameters:(NSDictionary *)params NS_REFINED_FOR_SWIFT;
 
 /**
  Makes a DELETE request to the provided URL passing form URL-encoded
@@ -176,7 +176,7 @@
    2) The `NSHTTPURLResponse`.
    3) The raw `NSData` response.
 */
-+ (AnyPromise *)DELETE:(NSString *)urlString formURLEncodedParameters:(NSDictionary *)params;
++ (AnyPromise *)DELETE:(NSString *)urlString formURLEncodedParameters:(NSDictionary *)params NS_REFINED_FOR_SWIFT;
 
 /**
  Makes a PATCH request to the provided URL passing the provided JSON parameters.
@@ -231,6 +231,6 @@
    2) The `NSHTTPURLResponse`.
    3) The raw `NSData` response.
 */
-+ (AnyPromise *)promise:(NSURLRequest *)request;
++ (AnyPromise *)promise:(NSURLRequest *)request NS_REFINED_FOR_SWIFT;
 
 @end

@@ -15,7 +15,7 @@
 
  And then in your sources:
 
-    #import <PromiseKit/PromiseKit.h>
+    @import PromiseKit;
 */
 @interface SLRequest (PromiseKit)
 
@@ -31,6 +31,6 @@
  @warning *Note* If PromiseKit determines the response is not JSON, the first
  parameter will instead be plain `NSData`.
 */
-- (AnyPromise *)promise;
+- (AnyPromise *)promise NS_REFINED_FOR_SWIFT;
 
 @end
