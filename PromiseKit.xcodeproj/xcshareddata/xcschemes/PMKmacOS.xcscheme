@@ -20,6 +20,20 @@
                ReferencedContainer = "container:PromiseKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6393A3921D1A05D0009B1E3A"
+               BuildableName = "PMKCategories.Bolts.xctest"
+               BlueprintName = "PMKTests/Categories/Bolts"
+               ReferencedContainer = "container:PromiseKit.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -86,6 +100,16 @@
                BlueprintIdentifier = "631B846D1D21B80500902234"
                BuildableName = "PMKCategories.OMG.xctest"
                BlueprintName = "PMKTests/Categories/OMG"
+               ReferencedContainer = "container:PromiseKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6393A3921D1A05D0009B1E3A"
+               BuildableName = "PMKCategories.Bolts.xctest"
+               BlueprintName = "PMKTests/Categories/Bolts"
                ReferencedContainer = "container:PromiseKit.xcodeproj">
             </BuildableReference>
          </TestableReference>

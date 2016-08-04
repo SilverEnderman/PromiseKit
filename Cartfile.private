@@ -1,4 +1,6 @@
 github "mxcl/OHHTTPStubs" "swift-3.0"
 github "robb/Stubbilino" == 0.2.1
-github "BoltsFramework/Bolts-iOS" == 1.8.4
-github "mxcl/OMGHTTPURLRQ" ~> 3.2.0
+github "BoltsFramework/Bolts-ObjC" ~> 1.8
+github "mxcl/OMGHTTPURLRQ" ~> 3.2
+# github "Alamofire/Alamofire" "swift3"
+# github "AFNetworking/AFNetworking" ~> 3.1

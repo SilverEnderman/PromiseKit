@@ -41,12 +41,7 @@
             buildForArchiving = "NO"
             buildForAnalyzing = "NO">
             <BuildableReference
-               BuildableIdentifier = "primary"
->>>>>>> Compiles with Xcode 8 beta3
-               BlueprintIdentifier = "638CDF021AEE734B0023A543"
-               BuildableName = "PMKUI.Host.app"
-               BlueprintName = "PMKTests/UI/Host"
-               ReferencedContainer = "container:PromiseKit.xcodeproj">
+               BuildableIdentifier = "primary">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
