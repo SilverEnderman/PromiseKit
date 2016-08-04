@@ -13,8 +13,12 @@ import PromiseKit
 
     import PromiseKit
 */
-
 extension SKRequest {
+    /**
+     Sends the request to the Apple App Store.
+
+     - Returns: A promise that fulfills if the request succeeds.
+    */
     public func promise() -> Promise<SKProductsResponse> {
         let proxy = SKDelegate()
         delegate = proxy

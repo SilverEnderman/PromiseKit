@@ -16,42 +16,29 @@ import func Foundation.NSLog
  *fulfilled* or an `Error` to become rejected.
 
  - SeeAlso: [PromiseKit `then` Guide](http://promisekit.org/docs/)
-*/
+ */
 public class Promise<T> {
     let state: State<T>
 
     /**
-     Create a new pending promise.
+     Create a new, pending promise.
 
-     Use this method when wrapping asynchronous systems that do *not* use
-     promises so that they can be involved in promise chains.
-
-     Don’t use this method if you already have promises! Instead, just return
-     your promise!
-
-     The closure you pass is executed immediately on the calling thread.
-
-         func fetchKitten() -> Promise<UIImage> {
+         func fetchAvatar(user: String) -> Promise<UIImage> {
              return Promise { fulfill, reject in
-                 KittenFetcher.fetchWithCompletionBlock({ img, err in
-                     if err == nil {
-                         if img.size.width > 0 {
-                             fulfill(img)
-                         } else {
-                             reject(Error.ImageTooSmall)
-                         }
-                     } else {
-                         reject(err)
-                     }
-                 })
+                 MyWebHelper.GET("\(user)/avatar") { data, err in
+                     guard let data = data else { return reject(err) }
+                     guard let img = UIImage(data: data) else { return reject(MyError.InvalidImage) }
+                     guard let img.size.width > 0 else { return reject(MyError.ImageTooSmall) }
+                     fulfill(img)
+                 }
              }
          }
 
-     - Parameter resolvers: The provided closure is called immediately.
-     Inside, execute your asynchronous system, calling fulfill if it suceeds
-     and reject for any errors.
+     - Parameter resolvers: The provided closure is called immediately on the active thread; commence your asynchronous task, calling either fulfill or reject when it completes.
+      - Parameter fulfill: Fulfills this promise with the provided value.
+      - Parameter reject: Rejects this promise with the provided error.
 
-     - Returns: return A new promise.
+     - Returns: A new promise.
 
      - Note: If you are wrapping a delegate-based system, we recommend
      to use instead: `Promise.pending()`
@@ -59,7 +46,7 @@ public class Promise<T> {
      - SeeAlso: http://promisekit.org/docs/sealing-promises/
      - SeeAlso: http://promisekit.org/docs/cookbook/wrapping-delegation/
      - SeeAlso: pending()
-    */
+     */
     required public init(resolvers: @noescape (fulfill: (T) -> Void, reject: (Error) -> Void) throws -> Void) {
         var resolve: ((Resolution<T>) -> Void)!
         do {
@@ -98,7 +85,7 @@ public class Promise<T> {
      Careful with this, it is imperative that sealant can only be called once
      or you will end up with spurious unhandled-errors due to possible double
      rejections and thus immediately deallocated ErrorConsumptionTokens.
-    */
+     */
     init(sealant: @noescape ((Resolution<T>) -> Void) -> Void) {
         var resolve: ((Resolution<T>) -> Void)!
         state = UnsealedState(resolver: &resolve)
@@ -135,7 +122,7 @@ public class Promise<T> {
        1) A promise
        2) A function that fulfills that promise
        3) A function that rejects that promise
-    */
+     */
     public class func pending() -> PendingTuple {
         var fulfill: ((T) -> Void)!
         var reject: ((Error) -> Void)!
@@ -144,19 +131,19 @@ public class Promise<T> {
     }
 
     /**
-     The provided closure is executed when this Promise is resolved.
+     The provided closure is executed when this promise is resolved.
 
-     - Parameter on: The queue to which your handler is dispatched.
+     - Parameter on: The queue to which the provided closure dispatches.
      - Parameter body: The closure that is executed when this Promise is fulfilled.
      - Returns: A new promise that is resolved with the value returned from the provided closure. For example:
 
-           NSURLConnection.GET(url).then { data -> Int in
+           NSURLSession.GET(url).then { data -> Int in
                //…
                return data.length
            }.then { length in
                //…
            }
-    */
+     */
     public func then<U>(on q: DispatchQueue = PMKDefaultDispatchQueue(), execute body: (T) throws -> U) -> Promise<U> {
         return Promise<U> { resolve in
             state.then(on: q, else: resolve) { value in
@@ -166,19 +153,20 @@ public class Promise<T> {
     }
 
     /**
-     The provided closure is executed when this `Promise` is resolved.
+     The provided closure executes when this promise resolves.
+     
+     This variant of `then` allows chaining promises, the promise returned by the provided closure is resolved before the promise returned by this closure resolves.
 
-     - Parameter on: The queue to which your handler is dispatched.
-     - Parameter body: The closure that is executed when this Promise is fulfilled.
-     - Returns: A new promise that is resolved when the Promise returned from the provided closure resolves. For example:
+     - Parameter on: The queue to which the provided closure dispatches.
+     - Parameter execute: The closure that executes when this promise fulfills.
+     - Returns: A new promise that resolves when the promise returned from the provided closure resolves. For example:
 
-           URLSession.GET(url1).then { data -> Promise<Data> in
-               //…
-               return URLSession.GET(url2)
-           }.then { data in
+           URLSession.GET(url1).then { data in
+               return CLLocationManager.promise()
+           }.then { location in
                //…
            }
-    */
+     */
     public func then<U>(on q: DispatchQueue = PMKDefaultDispatchQueue(), execute body: (T) throws -> Promise<U>) -> Promise<U> {
         var rv: Promise<U>!
         rv = Promise<U> { resolve in
@@ -192,27 +180,37 @@ public class Promise<T> {
     }
 
     /**
-     The provided closure is executed when this promise is rejected.
+     The provided closure executes when this promise rejects.
 
      Rejecting a promise cascades: rejecting all subsequent promises (unless
      recover is invoked) thus you will typically place your catch at the end
      of a chain. Often utility promises will not have a catch, instead
      delegating the error handling to the caller.
 
-     The provided closure runs on PMKDefaultDispatchQueue by default.
-
-     - Parameter on: The queue to which your handler is dispatched.
-     - Parameter policy: The default policy does not execute your handler for cancellation errors. See `registerCancellationError` for more documentation.
-     - Parameter body: The handler to execute if this promise is rejected.
-    */
+     - Parameter on: The queue to which the provided closure dispatches.
+     - Parameter policy: The default policy does not execute your handler for cancellation errors.
+     - Parameter execute: The handler to execute if this promise is rejected.
+     - SeeAlso: [Cancellation](http://promisekit.org/docs/)
+     */
     public func `catch`(on q: DispatchQueue = PMKDefaultDispatchQueue(), policy: CatchPolicy = .allErrorsExceptCancellation, execute body: (Error) -> Void) {
         state.catch(on: q, policy: policy, else: { _ in }, execute: body)
     }
 
     /**
-     The provided closure is executed when this promise is rejected giving you
-     an opportunity to recover from the error and continue the promise chain.
-    */
+     The provided closure executes when this promise rejects.
+     
+     Unlike `catch`, `recover` continues the chain provided the closure does not throw. Use `recover` in circumstances where recovering the chain from certain errors is a possibility. For example:
+     
+         CLLocationManager.promise().recover { error in
+             guard error == CLError.unknownLocation else { throw error }
+             return CLLocation.Chicago
+         }
+
+     - Parameter on: The queue to which the provided closure dispatches.
+     - Parameter policy: The default policy does not execute your handler for cancellation errors.
+     - Parameter execute: The handler to execute if this promise is rejected.
+     - SeeAlso: [Cancellation](http://promisekit.org/docs/)
+     */
     public func recover(on q: DispatchQueue = PMKDefaultDispatchQueue(), policy: CatchPolicy = .allErrorsExceptCancellation, execute body: (Error) throws -> Promise) -> Promise {
         var rv: Promise!
         rv = Promise { resolve in
@@ -225,6 +223,21 @@ public class Promise<T> {
         return rv
     }
 
+    /**
+     The provided closure executes when this promise rejects.
+
+     Unlike `catch`, `recover` continues the chain provided the closure does not throw. Use `recover` in circumstances where recovering the chain from certain errors is a possibility. For example:
+
+         CLLocationManager.promise().recover { error in
+             guard error == CLError.unknownLocation else { throw error }
+             return CLLocation.Chicago
+         }
+
+     - Parameter on: The queue to which the provided closure dispatches.
+     - Parameter policy: The default policy does not execute your handler for cancellation errors.
+     - Parameter execute: The handler to execute if this promise is rejected.
+     - SeeAlso: [Cancellation](http://promisekit.org/docs/)
+     */
     public func recover(on q: DispatchQueue = PMKDefaultDispatchQueue(), policy: CatchPolicy = .allErrorsExceptCancellation, execute body: (Error) throws -> T) -> Promise {
         return Promise { resolve in
             state.catch(on: q, policy: policy, else: resolve) { error in
@@ -234,18 +247,22 @@ public class Promise<T> {
     }
 
     /**
-     The provided closure is executed when this Promise is resolved.
+     The provided closure executes when this promise resolves.
 
-         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-         somePromise.fulfilled().then {
+         firstly {
+             UIApplication.shared.networkActivityIndicatorVisible = true
+         }.then {
              //…
          }.always {
-             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+             UIApplication.shared.networkActivityIndicatorVisible = false
+         }.catch {
+             //…
          }
 
-     - Parameter on: The queue on which body should be executed.
-     - Parameter body: The closure that is executed when this Promise is resolved.
-    */
+     - Parameter on: The queue to which the provided closure dispatches.
+     - Parameter execute: The closure that executes when this promise resolves.
+     - Returns: A new promise, resolved with this promise’s resolution.
+     */
     public func always(on q: DispatchQueue = PMKDefaultDispatchQueue(), execute body: () -> Void) -> Promise {
         state.always(on: q) { resolution in
             body()
@@ -254,11 +271,17 @@ public class Promise<T> {
     }
 
     /**
-      `tap` allows you to “tap” into a promise chain and inspect its result. The function you provide cannot mutate the chain.
+     `tap` allows you to “tap” into a promise chain and inspect its result.
+     
+     The function you provide cannot mutate the chain.
  
-          NSURLSession.GET(…).tap { result in
-              print(result)
-          }
+         NSURLSession.GET(/*…*/).tap { result in
+             print(result)
+         }
+
+     - Parameter on: The queue to which the provided closure dispatches.
+     - Parameter execute: The closure that executes when this promise resolves.
+     - Returns: A new promise, resolved with this promise’s resolution.
      */
     public func tap(on q: DispatchQueue = PMKDefaultDispatchQueue(), execute body: (Result<T>) -> Void) -> Promise {
         state.always(on: q) { resolution in
@@ -391,7 +414,9 @@ public func dispatch_promise<T>(_ on: DispatchQueue, _ body: () throws -> T) -> 
  - remark: Same as `Resolution<T>` but without the associated `ErrorConsumptionToken`.
 */
 public enum Result<T> {
+    /// Fulfillment
     case fulfilled(T)
+    /// Rejection
     case rejected(Error)
 
     init(_ resolution: Resolution<T>) {

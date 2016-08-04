@@ -14,10 +14,14 @@ import EventKit
     import PromiseKit
 #endif
 
+/// Errors representing PromiseKit EventKit failures
 public enum EventKitError: Error {
+    /// Access to the EKEventStore is restricted
     case restricted
+    /// Access to the EKEventStore is denied
     case denied
 
+    /// A textual description of the EKEventStore error
     public var localizedDescription: String {
         switch self {
         case .restricted:
@@ -33,14 +37,13 @@ public enum EventKitError: Error {
 
  To import `EKEventStore`:
 
- use_frameworks!
- pod "PromiseKit/EventKit"
+     pod "PromiseKit/EventKit"
 
  And then in your sources:
 
- import PromiseKit
+     import PromiseKit
 
- @return A promise that fulfills with the EKEventStore.
+ - Returns: A promise that fulfills with the EKEventStore.
  */
 public func EKEventStoreRequestAccess() -> Promise<(EKEventStore)> {
     let eventStore = EKEventStore()

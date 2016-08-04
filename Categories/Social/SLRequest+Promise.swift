@@ -14,6 +14,12 @@ import PromiseKit
     import PromiseKit
 */
 extension SLRequest {
+    /**
+     Performs the request asynchronously.
+
+     - Returns: A promise that fulfills with the response.
+     - SeeAlso: `URLDataPromise`
+    */
     public func promise() -> URLDataPromise {
         return URLDataPromise.go(preparedURLRequest()) { completionHandler in
             perform(handler: completionHandler)

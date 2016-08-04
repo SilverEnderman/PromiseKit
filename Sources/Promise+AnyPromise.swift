@@ -2,11 +2,11 @@ import class Dispatch.DispatchQueue
 
 extension Promise {
     /**
-     The provided closure is executed when this Promise is resolved.
+     The provided closure executes once this promise resolves.
 
-     - Parameter on: The queue on which body should be executed.
-     - Parameter body: The closure that is executed when this Promise is fulfilled.
-     - Returns: A new promise that is resolved when the AnyPromise returned from the provided closure resolves. For example:
+     - Parameter on: The queue on which the provided closure executes.
+     - Parameter body: The closure that is executed when this promise fulfills.
+     - Returns: A new promise that resolves when the `AnyPromise` returned from the provided closure resolves. For example:
 
            NSURLSession.GET(url).then { (data: NSData) -> AnyPromise in
                //…

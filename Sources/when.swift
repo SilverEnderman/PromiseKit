@@ -44,7 +44,7 @@ private func _when<T>(_ promises: [Promise<T>]) -> Promise<Void> {
 }
 
 /**
- Wait for all promises in a set to resolve.
+ Wait for all promises in a set to fulfill.
 
  For example:
 
@@ -70,28 +70,33 @@ public func when<T>(fulfilled promises: [Promise<T>]) -> Promise<[T]> {
     return _when(promises).then(on: zalgo) { promises.map{ $0.value! } }
 }
 
+/// Wait for all promises in a set to fulfill.
 public func when<T>(fulfilled promises: Promise<T>...) -> Promise<[T]> {
     return when(fulfilled: promises)
 }
 
+/// Wait for all promises in a set to fulfill.
 public func when(fulfilled promises: Promise<Void>...) -> Promise<Void> {
     return _when(promises)
 }
 
+/// Wait for all promises in a set to fulfill.
 public func when(fulfilled promises: [Promise<Void>]) -> Promise<Void> {
     return _when(promises)
 }
 
+/// Wait for all promises in a set to fulfill.
 public func when<U, V>(fulfilled pu: Promise<U>, _ pv: Promise<V>) -> Promise<(U, V)> {
     return _when([pu.asVoid(), pv.asVoid()]).then(on: zalgo) { (pu.value!, pv.value!) }
 }
 
+/// Wait for all promises in a set to fulfill.
 public func when<U, V, X>(fulfilled pu: Promise<U>, _ pv: Promise<V>, _ px: Promise<X>) -> Promise<(U, V, X)> {
     return _when([pu.asVoid(), pv.asVoid(), px.asVoid()]).then(on: zalgo) { (pu.value!, pv.value!, px.value!) }
 }
 
 /**
- Generate promises at a limited rate and wait for all to resolve.
+ Generate promises at a limited rate and wait for all to fulfill.
 
  For example:
  
@@ -191,7 +196,7 @@ public func when<T, PromiseIterator: IteratorProtocol where PromiseIterator.Elem
 }
 
 /**
- Waits on all provided promises.
+ Wait for all promises in a set to resolve.
 
  `when(fulfilled:)` rejects as soon as one of the provided promises rejects. `when(resolved:)` waits on all provided promises and **never** rejects.
 
@@ -211,6 +216,7 @@ public func when<T>(resolved promises: Promise<T>...) -> Promise<[Result<T>]> {
     return when(resolved: promises)
 }
 
+/// Wait for all promises in a set to resolve.
 public func when<T>(resolved promises: [Promise<T>]) -> Promise<[Result<T>]> {
     guard !promises.isEmpty else { return Promise(value: []) }
 

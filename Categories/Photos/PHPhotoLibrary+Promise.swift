@@ -14,6 +14,10 @@ import PromiseKit
     import PromiseKit
 */
 extension PHPhotoLibrary {
+    /**
+     - Returns: A promise that fulfills with the user’s authorization
+     - Note: This promise cannot reject.
+     */
     public class func requestAuthorization() -> Promise<PHAuthorizationStatus> {
         return Promise { fulfill, _ in PHPhotoLibrary.requestAuthorization(fulfill) }
     }

@@ -14,24 +14,28 @@ import PromiseKit
     import PromiseKit
 */
 extension CLGeocoder {
+    /// Submits a reverse-geocoding request for the specified location.
     public func reverseGeocodeLocation(_ location: CLLocation) -> PlacemarkPromise {
         return PlacemarkPromise.go { resolve in
             reverseGeocodeLocation(location, completionHandler: resolve)
         }
     }
-    
+
+    /// Submits a forward-geocoding request using the specified address dictionary.
     public func geocode(_ addressDictionary: [String: String]) -> PlacemarkPromise {
         return PlacemarkPromise.go { resolve in
             geocodeAddressDictionary(addressDictionary, completionHandler: resolve)
         }
     }
-    
+
+    /// Submits a forward-geocoding request using the specified address string.
     public func geocode(_ addressString: String) -> PlacemarkPromise {
         return PlacemarkPromise.go { resolve in
             geocodeAddressString(addressString, completionHandler: resolve)
         }
     }
-    
+
+    /// Submits a forward-geocoding request using the specified address string within the specified region.
     public func geocode(_ addressString: String, region: CLRegion?) -> PlacemarkPromise {
         return PlacemarkPromise.go { resolve in
             geocodeAddressString(addressString, in: region, completionHandler: resolve)
@@ -46,8 +50,10 @@ extension CLGeocoder {
 //    }
 //}
 
+/// A promise that returns the first CLPlacemark from an array of results.
 public class PlacemarkPromise: Promise<CLPlacemark> {
 
+    /// Returns all CLPlacemarks rather than just the first
     public func allResults() -> Promise<[CLPlacemark]> {
         return then(on: zalgo) { _ in return self.placemarks }
     }

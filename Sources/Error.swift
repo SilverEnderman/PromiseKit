@@ -70,6 +70,7 @@ public enum URLError: Error {
 }
 
 public enum JSONError: Error {
+    /// The JSON response was different to that requested
     case unexpectedRootNode(AnyObject)
 }
 
@@ -77,6 +78,7 @@ public enum JSONError: Error {
 //////////////////////////////////////////////////////////// Cancellation
 
 public protocol CancellableError: Error {
+    /// - Returns: true if the error represents cancellation.
     var isCancelled: Bool { get }
 }
 
@@ -111,6 +113,7 @@ extension NSError {
         cancelledErrorIdentifiers.insert(ErrorPair(domain, code))
     }
 
+    /// - Returns: true if the error represents cancellation.
     @objc public var isCancelled: Bool {
         return (self as Error).isCancelledError
     }

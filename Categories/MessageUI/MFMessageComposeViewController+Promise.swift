@@ -16,7 +16,8 @@ import PromiseKit
     import PromiseKit
 */
 extension UIViewController {
-    public func promiseViewController(vc: MFMessageComposeViewController, animated: Bool = true, completion:(() -> Void)? = nil) -> Promise<Void> {
+    /// Presents the message view controller and resolves with the user action.
+    public func promise(_ vc: MFMessageComposeViewController, animated: Bool = true, completion:(() -> Void)? = nil) -> Promise<Void> {
         let proxy = PMKMessageComposeViewControllerDelegate()
         proxy.retainCycle = proxy
         vc.messageComposeDelegate = proxy

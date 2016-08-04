@@ -12,6 +12,15 @@
 // NSProgress! Beware!
 //  * https://github.com/AFNetworking/AFNetworking/issues/2261
 
+
+/**
+ Wait for all promises in a set to resolve.
+
+ @note If *any* of the provided promises reject, the returned promise is immediately rejected with that error.
+ @warning In the event of rejection the other promises will continue to resolve and, as per any other promise, will either fulfill or reject. This is the right pattern for `getter` style asynchronous tasks, but often for `setter` tasks (eg. storing data on a server), you most likely will need to wait on all tasks and then act based on which have succeeded and which have failed, in such situations use `when(resolved:)`.
+ @param promises The promises upon which to wait before the returned promise resolves.
+ @return A new promise that resolves when all the provided promises fulfill or one of the provided promises rejects.
+*/
 AnyPromise *PMKWhen(id promises) {
     if (promises == nil)
         return [AnyPromise promiseWithValue:[NSError errorWithDomain:PMKErrorDomain code:PMKInvalidUsageError userInfo:@{NSLocalizedDescriptionKey: @"PMKWhen(nil)"}]];

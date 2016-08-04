@@ -29,11 +29,15 @@ extension UIViewController {
         case nilPromisable
     }
 
+    /// Configures when a UIViewController promise resolves
     public enum FulfillmentType {
+        /// The promise resolves just after the view controller has disappeared.
         case onceDisappeared
+        /// The promise resolves before the view controller has disappeared.
         case beforeDismissal
     }
 
+    /// Presents the UIViewController, resolving with the user action.
     public func promise<T>(_ vc: UIViewController, animate animationOptions: PMKAnimationOptions = [.appear, .disappear], fulfills: FulfillmentType = .onceDisappeared, completion: (() -> Void)? = nil) -> Promise<T> {
         let pvc: UIViewController
 
@@ -82,6 +86,7 @@ extension UIViewController {
         return promise(vc, animate: animated ? [.appear, .disappear] : [], completion: completion)
     }
 
+    /// Presents the UIImagePickerController, resolving with the user action.
     public func promise(_ vc: UIImagePickerController, animate: PMKAnimationOptions = [.appear, .disappear], completion: (() -> Void)? = nil) -> Promise<UIImage> {
         let animated = animate.contains(.appear)
         let proxy = UIImagePickerControllerProxy()
@@ -101,6 +106,7 @@ extension UIViewController {
         }
     }
 
+    /// Presents the UIImagePickerController, resolving with the user action.
     public func promise(_ vc: UIImagePickerController, animate: PMKAnimationOptions = [.appear, .disappear], completion: (() -> Void)? = nil) -> Promise<[String: AnyObject]> {
         let animated = animate.contains(.appear)
         let proxy = UIImagePickerControllerProxy()
@@ -112,6 +118,7 @@ extension UIViewController {
     }
 }
 
+/// A protocol for UIViewControllers that can be promised.
 @objc(Promisable) public protocol Promisable {
     /**
      Provide a promise for promiseViewController here.
@@ -147,12 +154,15 @@ extension UIViewController {
 
 
 extension UIImagePickerController {
+    /// Errors representing PromiseKit UIImagePickerController failures
     public enum Error: CancellableError {
+        /// The user cancelled the UIImagePickerController.
         case cancelled
-
+        /// - Returns: true
         public var isCancelled: Bool {
             switch self {
-                case .cancelled: return true
+            case .cancelled:
+                return true
             }
         }
     }

@@ -14,10 +14,7 @@ import PromiseKit
     import PromiseKit
 */
 extension MKMapSnapshotter {
-    /**
-      Don’t cancel the Snapshotter, Apple never call the completionHandler if
-      you do. Which means the promise will never resolve.
-     */
+    /// Starts generating the snapshot using the options set in this object.
     public func promise() -> Promise<MKMapSnapshot> {
         return Promise.wrap(resolver: start)
     }

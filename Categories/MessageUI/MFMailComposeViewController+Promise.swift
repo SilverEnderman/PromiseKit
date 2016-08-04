@@ -15,7 +15,8 @@ import PromiseKit
     import PromiseKit
 */
 extension UIViewController {
-    public func promiseViewController(vc: MFMailComposeViewController, animated: Bool = true, completion:(() -> Void)? = nil) -> Promise<MFMailComposeResult> {
+    /// Presents the message view controller and resolves with the user action.
+    public func promise(_ vc: MFMailComposeViewController, animated: Bool = true, completion:(() -> Void)? = nil) -> Promise<MFMailComposeResult> {
         let proxy = PMKMailComposeViewControllerDelegate()
         proxy.retainCycle = proxy
         vc.mailComposeDelegate = proxy
@@ -28,12 +29,16 @@ extension UIViewController {
 }
 
 extension MFMailComposeViewController {
+    /// Errors representing PromiseKit MFMailComposeViewController failures
     public enum Error: CancellableError {
+        /// The user cancelled sending mail
         case cancelled
 
+        /// - Returns: true
         public var isCancelled: Bool {
             switch self {
-                case .cancelled: return true
+            case .cancelled:
+                return true
             }
         }
     }

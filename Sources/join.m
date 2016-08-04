@@ -6,6 +6,13 @@
 #import "PromiseKit.h"
 #import <stdatomic.h>
 
+/**
+ Waits on all provided promises.
+
+ `PMKWhen` rejects as soon as one of the provided promises rejects. `PMKJoin` waits on all provided promises, then rejects if any of those promises rejects, otherwise it fulfills with values from the provided promises.
+
+ - Returns: A new promise that resolves once all the provided promises resolve.
+*/
 AnyPromise *PMKJoin(NSArray *promises) {
     if (promises == nil)
         return [AnyPromise promiseWithValue:[NSError errorWithDomain:PMKErrorDomain code:PMKInvalidUsageError userInfo:@{NSLocalizedDescriptionKey: @"PMKJoin(nil)"}]];

@@ -14,15 +14,12 @@ import PromiseKit
     import PromiseKit
 */
 extension MKDirections {
-    /**
-     Calling cancel on an MKDirections instance does nothing. The API is a
-     lie. Consequently this PromiseKit extension does not support
-     cancellation.
-    */
+    /// Begins calculating the requested route information asynchronously.
     public func promise() -> Promise<MKDirectionsResponse> {
         return Promise.wrap(resolver: calculate)
     }
 
+    /// Begins calculating the requested travel-time information asynchronously.
     public func promise() -> Promise<MKETAResponse> {
         return Promise.wrap(resolver: calculateETA)
     }

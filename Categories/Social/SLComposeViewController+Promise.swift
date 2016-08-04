@@ -15,7 +15,8 @@ import PromiseKit
     import PromiseKit
 */
 extension UIViewController {
-    public func promiseViewController(_ vc: SLComposeViewController, animated: Bool = true, completion: (() -> Void)? = nil) -> Promise<Void> {
+    /// Presents the message view controller and resolves with the user action.
+    public func promise(_ vc: SLComposeViewController, animated: Bool = true, completion: (() -> Void)? = nil) -> Promise<Void> {
         present(vc, animated: animated, completion: completion)
         return Promise { fulfill, reject in
             vc.completionHandler = { result in
@@ -30,9 +31,12 @@ extension UIViewController {
 }
 
 extension SLComposeViewController {
+    /// Errors representing PromiseKit SLComposeViewController failures
     public enum Error: CancellableError {
+        /// The user cancelled the view controller.
         case cancelled
 
+        /// - Returns: true
         public var isCancelled: Bool {
             switch self { case .cancelled: return true }
         }

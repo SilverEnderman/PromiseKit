@@ -1,14 +1,20 @@
 import Foundation
 
 public enum Encoding {
+    /// Decode as JSON
     case json(JSONSerialization.ReadingOptions)
 }
 
+/**
+ A promise capable of decoding common Internet data types.
+ */
 public class URLDataPromise: Promise<Data> {
+    /// Convert the promise to a tuple of `(Data, URLResponse)`
     public func asDataAndResponse() -> Promise<(Data, Foundation.URLResponse)> {
         return then(on: zalgo) { ($0, self.URLResponse) }
     }
 
+    /// Decode the HTTP response to a String, the string encoding is read from the response.
     public func asString() -> Promise<String> {
         return then(on: waldo) { data -> String in
             guard let str = String(bytes: data, encoding: self.URLResponse.stringEncoding ?? .utf8) else {
@@ -18,6 +24,7 @@ public class URLDataPromise: Promise<Data> {
         }
     }
 
+    /// Decode the HTTP response as a JSON array
     public func asArray(_ encoding: Encoding = .json(.allowFragments)) -> Promise<NSArray> {
         return then(on: waldo) { data -> NSArray in
             switch encoding {
@@ -30,6 +37,7 @@ public class URLDataPromise: Promise<Data> {
         }
     }
 
+    /// Decode the HTTP response as a JSON dictionary
     public func asDictionary(_ encoding: Encoding = .json(.allowFragments)) -> Promise<NSDictionary> {
         return then(on: waldo) { data -> NSDictionary in
             switch encoding {
@@ -45,6 +53,7 @@ public class URLDataPromise: Promise<Data> {
     private var URLRequest: Foundation.URLRequest!
     private var URLResponse: Foundation.URLResponse!
 
+    /// Internal
     public class func go(_ request: URLRequest, body: @noescape ((Data?, URLResponse?, Error?) -> Void) -> Void) -> URLDataPromise {
         var fulfill: ((Data) -> Void)!
         var reject: ((Error) -> Void)!
@@ -74,11 +83,13 @@ public class URLDataPromise: Promise<Data> {
     import UIKit.UIImage
 
     extension URLDataPromise {
+        /// Decode the HTTP response as a UIImage
         public func asImage() -> Promise<UIImage> {
             return then(on: waldo) { data -> UIImage in
                 guard let img = UIImage(data: data), let cgimg = img.cgImage else {
                     throw URLError.invalidImageData(self.URLRequest, data)
                 }
+                // this way of decoding the image limits main thread impact when displaying the image
                 return UIImage(cgImage: cgimg, scale: img.scale, orientation: img.imageOrientation)
             }
         }

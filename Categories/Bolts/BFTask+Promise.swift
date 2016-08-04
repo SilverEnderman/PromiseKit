@@ -2,6 +2,9 @@ import PromiseKit
 import Bolts
 
 extension Promise {
+    /**
+     The provided closure is executed when this promise is resolved.
+     */
     public func then<U: AnyObject>(on q: DispatchQueue = PMKDefaultDispatchQueue(), body: (T) -> BFTask<U>) -> Promise<U?> {
         return then(on: q) { tee -> Promise<U?> in
             let task = body(tee)

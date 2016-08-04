@@ -15,6 +15,7 @@ import PromiseKit
     import PromiseKit
 */
 extension AVAudioSession {
+    /// Requests the user’s permission for audio recording.
     public func requestRecordPermission() -> Promise<Bool> {
         return Promise { fulfill, _ in
             requestRecordPermission(fulfill)

@@ -15,9 +15,13 @@ import PromiseKit
 */
 extension CLLocationManager {
 
+    /// The location authorization type
     public enum RequestAuthorizationType {
+        /// Determine the authorization from the application’s plist
         case automatic
+        /// Request always-authorization
         case always
+        /// Request when-in-use-authorization
         case whenInUse
     }
 
@@ -27,9 +31,9 @@ extension CLLocationManager {
     }
   
     /**
-      @return A new promise that fulfills with the most recent CLLocation.
-
-      @param requestAuthorizationType We read your Info plist and try to
+      - Returns: A new promise that fulfills with the most recent CLLocation.
+      - Note: To return all locations call `allResults()`. 
+      - Parameter requestAuthorizationType: We read your Info plist and try to
       determine the authorization type we should request automatically. If you
       want to force one or the other, change this parameter from its default
       value.
@@ -150,10 +154,12 @@ private func auther(_ requestAuthorizationType: CLLocationManager.RequestAuthori
 #endif
 
 
+/// The promise returned by CLLocationManager.promise()
 public class LocationPromise: Promise<CLLocation> {
     // convoluted for concurrency guarantees
     private let (parentPromise, fulfill, reject) = Promise<[CLLocation]>.pending()
 
+    /// Convert the promise so that all Location results are returned
     public func allResults() -> Promise<[CLLocation]> {
         return parentPromise
     }

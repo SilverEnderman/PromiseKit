@@ -20,6 +20,20 @@ import PromiseKit
     import PromiseKit
 */
 extension UIAlertView {
+    /**
+     Displays the alert view.
+
+        let alert = UIAlertView()
+        alert.title = "OHAI"
+        alert.addButtonWithTitle("OK")
+        alert.cancelButtonIndex = sheet.addButtonWithTitle("Cancel")
+        alert.promise().then { dismissedButtonIndex -> Void in
+            // index won't be the cancelled button index!
+        }
+
+     - Important: If a cancelButtonIndex is set the promise will be *cancelled* if that button is pressed. Cancellation in PromiseKit has special behavior, see the relevant documentation for more details.
+     - Returns: A promise that fulfills with the pressed button index.
+     */
     public func promise() -> Promise<Int> {
         let proxy = PMKAlertViewDelegate()
         delegate = proxy
@@ -33,12 +47,15 @@ extension UIAlertView {
         return proxy.promise
     }
 
+    /// Errors representing PromiseKit UIAlertView failures.
     public enum Error: CancellableError {
+        /// The user cancelled the action sheet.
         case cancelled
-
+        /// - Returns: true
         public var isCancelled: Bool {
             switch self {
-                case .cancelled: return true
+            case .cancelled:
+                return true
             }
         }
     }

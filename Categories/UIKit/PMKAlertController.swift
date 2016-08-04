@@ -28,17 +28,25 @@ import PromiseKit
     }
 */
 public class PMKAlertController {
+    /// The title of the alert.
     public var title: String? { return UIAlertController.title }
+    /// Descriptive text that provides more details about the reason for the alert.
     public var message: String? { return UIAlertController.message }
+    /// The style of the alert controller.
     public var preferredStyle: UIAlertControllerStyle { return UIAlertController.preferredStyle }
+    /// The actions that the user can take in response to the alert or action sheet.
     public var actions: [UIAlertAction] { return UIAlertController.actions }
+    /// The array of text fields displayed by the alert.
     public var textFields: [UITextField]? { return UIAlertController.textFields }
+    /// The nearest popover presentation controller that is managing the current view controller.
     public var popoverPresentationController: UIPopoverPresentationController? { return UIAlertController.popoverPresentationController }
 
+    /// Creates and returns a view controller for displaying an alert to the user.
     public required init(title: String?, message: String?  = nil, preferredStyle: UIAlertControllerStyle = .alert) {
         UIAlertController = UIKit.UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
     }
 
+    /// Attaches an action title to the alert or action sheet.
     public func addActionWithTitle(title: String, style: UIAlertActionStyle = .default) -> UIAlertAction {
         let action = UIAlertAction(title: title, style: style) { action in
             if style != .cancel {
@@ -51,6 +59,7 @@ public class PMKAlertController {
         return action
     }
 
+    /// Adds a text field to an alert.
     public func addTextFieldWithConfigurationHandler(configurationHandler: ((UITextField) -> Void)?) {
         UIAlertController.addTextField(configurationHandler: configurationHandler)
     }
@@ -59,17 +68,21 @@ public class PMKAlertController {
     private let (promise, fulfill, reject) = Promise<UIAlertAction>.pending()
     private var retainCycle: PMKAlertController?
 
+    /// Errors that represent PMKAlertController failures
     public enum Error: CancellableError {
+        /// The user cancelled the PMKAlertController.
         case cancelled
-      
-      public var isCancelled: Bool {
-          return self == .cancelled
-      }
+
+        /// - Returns: true
+        public var isCancelled: Bool {
+            return self == .cancelled
+        }
     }
 }
 
 extension UIViewController {
-    public func promiseViewController(vc: PMKAlertController, animated: Bool = true, completion: (() -> Void)? = nil) -> Promise<UIAlertAction> {
+    /// Presents the PMKAlertController, resolving with the user action.
+    public func promise(_ vc: PMKAlertController, animated: Bool = true, completion: (() -> Void)? = nil) -> Promise<UIAlertAction> {
         vc.retainCycle = vc
         present(vc.UIAlertController, animated: true, completion: nil)
         _ = vc.promise.always { _ -> Void in

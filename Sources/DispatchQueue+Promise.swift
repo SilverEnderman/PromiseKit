@@ -10,7 +10,7 @@ import Dispatch
  ```
 
  - Parameter body: The closure that resolves this promise.
- - Returns: A new promise resolved by the provided closure.
+ - Returns: A new promise resolved by the result of the provided closure.
 */
 extension DispatchQueue {
     public func promise<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .default, flags: DispatchWorkItemFlags = [], execute body: () throws -> T) -> Promise<T> {

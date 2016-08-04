@@ -19,7 +19,8 @@ import PromiseKit
     import PromiseKit
 */
 extension NotificationCenter {
-    public func once(forName name: String) -> NotificationPromise {
+    /// Observe the named notification once
+    public func observe(once name: String) -> NotificationPromise {
         let (promise, fulfill) = NotificationPromise.go()
         let id = addObserver(forName: NSNotification.Name(rawValue: name), object: nil, queue: nil, using: fulfill)
         _ = promise.then(on: zalgo) { _ in self.removeObserver(id) }
@@ -27,6 +28,7 @@ extension NotificationCenter {
     }
 }
 
+/// The promise returned by `NotificationCenter.observe(once:)`
 public class NotificationPromise: Promise<[String: Any]> {
     private let pending = Promise<Notification>.pending()
 

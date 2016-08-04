@@ -9,7 +9,7 @@
     use_frameworks!
     pod "PromiseKit/Foundation"
 
- Or `NSURLConnection` is one of the categories imported by the umbrella pod:
+ Or `NSURLSession` is one of the categories imported by the umbrella pod:
 
     use_frameworks!
     pod "PromiseKit"
@@ -49,7 +49,7 @@
 /**
  Makes a GET request to the provided URL.
 
-     [NSURLConnection GET:@"http://placekitten.com/320/320"].then(^(UIImage *img){
+     [NSURLSession GET:@"http://placekitten.com/320/320"].then(^(UIImage *img){
          // PromiseKit decodes the image (if it’s an image)
      });
 
@@ -68,7 +68,7 @@
 
      id url = @"http://jsonplaceholder.typicode.com/comments";
      id params = @{@"postId": @1};
-     [NSURLConnection GET:url query:params].then(^(NSDictionary *jsonResponse){
+     [NSURLSession GET:url query:params].then(^(NSDictionary *jsonResponse){
          // PromiseKit decodes the JSON dictionary (if it’s JSON)
      });
 
@@ -94,7 +94,7 @@
 
      id url = @"http://jsonplaceholder.typicode.com/posts";
      id params = @{@"title": @"foo", @"body": @"bar", @"userId": @1};
-     [NSURLConnection POST:url formURLEncodedParameters:params].then(^(NSDictionary *jsonResponse){
+     [NSURLSession POST:url formURLEncodedParameters:params].then(^(NSDictionary *jsonResponse){
          // PromiseKit decodes the JSON dictionary (if it’s JSON)
      });
 
@@ -118,7 +118,7 @@
 
      id url = @"http://jsonplaceholder.typicode.com/posts";
      id params = @{@"title": @"foo", @"body": @"bar", @"userId": @1};
-     [NSURLConnection POST:url JSON:params].then(^(NSDictionary *jsonResponse){
+     [NSURLSession POST:url JSON:params].then(^(NSDictionary *jsonResponse){
          // PromiseKit decodes the JSON dictionary (if it’s JSON)
      });
 
@@ -140,7 +140,7 @@
 
      id url = @"http://jsonplaceholder.typicode.com/posts/1";
      id params = @{@"id": @1, @"title": @"foo", @"body": @"bar", @"userId": @1};
-     [NSURLConnection PUT:url formURLEncodedParameters:params].then(^(NSDictionary *jsonResponse){
+     [NSURLSession PUT:url formURLEncodedParameters:params].then(^(NSDictionary *jsonResponse){
          // PromiseKit decodes the JSON dictionary (if it’s JSON)
      });
 
@@ -162,7 +162,7 @@
 
      id url = @"http://jsonplaceholder.typicode.com/posts/1";
      id params = nil;
-     [NSURLConnection DELETE:url formURLEncodedParameters:params].then(^(NSDictionary *jsonResponse){
+     [NSURLSession DELETE:url formURLEncodedParameters:params].then(^(NSDictionary *jsonResponse){
          // PromiseKit decodes the JSON dictionary (if it’s JSON)
      });
 
@@ -183,7 +183,7 @@
 
      id url = @"http://jsonplaceholder.typicode.com/posts/1";
      id params = nil;
-     [NSURLConnection PATCH:url JSON:params].then(^(NSDictionary *jsonResponse){
+     [NSURLSession PATCH:url JSON:params].then(^(NSDictionary *jsonResponse){
          // PromiseKit decodes the JSON dictionary (if it’s JSON)
      });
 
@@ -219,7 +219,7 @@
 
     NSMutableURLRequest *rq = [OMGHTTPURLRQ POST:url:multipartFormData];
 
-    [NSURLConnection promise:rq].then(^(id response){
+    [NSURLSession promise:rq].then(^(id response){
         //…
     });
 

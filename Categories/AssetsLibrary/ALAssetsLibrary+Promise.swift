@@ -17,8 +17,7 @@ import UIKit.UIViewController
 */
 extension UIViewController {
     /**
-      @return A promise that presents the provided UIImagePickerController and
-      fulfills with the user selected media’s `NSData`.
+      - Returns: A promise that presents the provided UIImagePickerController and fulfills with the user selected media’s `NSData`.
      */
     public func promise(_ vc: UIImagePickerController, animated: Bool = false, completion: (() -> Void)? = nil) -> Promise<NSData> {
         let proxy = UIImagePickerControllerProxy()
