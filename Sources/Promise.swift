@@ -387,14 +387,14 @@ public func dispatch_promise<T>(_ on: DispatchQueue, _ body: () throws -> T) -> 
 
 
 /**
- Used by `tap()`
+ The underlying resolved state of a promise.
  - remark: Same as `Resolution<T>` but without the associated `ErrorConsumptionToken`.
 */
 public enum Result<T> {
     case fulfilled(T)
     case rejected(Error)
 
-    private init(_ resolution: Resolution<T>) {
+    init(_ resolution: Resolution<T>) {
         switch resolution {
         case .fulfilled(let value):
             self = .fulfilled(value)

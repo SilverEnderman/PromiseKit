@@ -7,7 +7,7 @@ import Dispatch
 
      join(promise1, promise2, promise3).then { results in
          //…
-     }.error { error in
+     }.catch { error in
          switch error {
          case Error.Join(let promises):
              //…
@@ -15,15 +15,19 @@ import Dispatch
      }
 
  - Returns: A new promise that resolves once all the provided promises resolve.
+ - SeeAlso: `PromiseKit.Error.join`
 */
+@available(*, deprecated: 4.0, message: "Use when(resolved:)")
 public func join<T>(_ promises: Promise<T>...) -> Promise<[T]> {
     return join(promises)
 }
 
+@available(*, deprecated: 4.0, message: "Use when(resolved:)")
 public func join(_ promises: [Promise<Void>]) -> Promise<Void> {
     return join(promises).then(on: zalgo) { (_: [Void]) in return Promise(value: ()) }
 }
 
+@available(*, deprecated: 4.0, message: "Use when(resolved:)")
 public func join<T>(_ promises: [Promise<T>]) -> Promise<[T]> {
     guard !promises.isEmpty else { return Promise(value: []) }
   
