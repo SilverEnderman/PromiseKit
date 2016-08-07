@@ -3,6 +3,7 @@ layout: default
 hidebanner: true
 redirect_from: "/PromiseKit-2.0-Released/"
 ---
+<br>
 
 <p><img style='width:100%' src="/public/img/PMKBanner2.png"></p>
 
