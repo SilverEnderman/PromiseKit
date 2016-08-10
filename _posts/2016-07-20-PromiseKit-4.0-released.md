@@ -3,7 +3,9 @@ layout: default
 title: PromiseKit 4.0 Released
 ---
 
-# PromiseKit 4.0 Released
+# PromiseKit 4.0 is not yet released!
+
+> PromiseKit 4 will be released once Xcode 8 is released. The current version is available, as the swift-3.0 branch.
 
 Notable changes:
 
