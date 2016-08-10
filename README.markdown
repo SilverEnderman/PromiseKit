@@ -28,7 +28,7 @@ platform with a `swiftc`, it has *excellent* Objective-C bridging and
 
 ```ruby
 # CocoaPods
-pod "PromiseKit", "~> 4.0"
+pod "PromiseKit", branch: "swift-3.0"
 
 # Carthage
 github "mxcl/PromiseKit" ~> 4.0
