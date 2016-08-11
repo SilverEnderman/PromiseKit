@@ -193,7 +193,7 @@ after(interval: 1.5).then {
 And `race`:
 
 ```swift
-race(turle(), rabbit()).then { winner in
+race(turtle(), rabbit()).then { winner in
     // whoever fulfills first, wins!
 }
 ```
