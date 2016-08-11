@@ -180,6 +180,24 @@ directionsPromise.then { print(2) }
 
 The closures you pass are executed in order — once the directions have come back from Apple’s servers.
 
+---
+
+We also provide `after`:
+
+```swift
+after(interval: 1.5).then {
+    // 1.5 seconds later!
+}
+```
+
+And `race`:
+
+```swift
+race(turle(), rabbit()).then { winner in
+    // whoever fulfills first, wins!
+}
+```
+
 ## Further Reading
 
 * [https://littlebitesofcocoa.com/13-promisekit]()
